@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">FavDish</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_all_dishes">All Dishes</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_random_dish">Random Dish</string>
 
     <!-- SPLASH SCREEN -->
     <string name="splash_screen_title">Fav Dish</string>
@@ -19,5 +19,6 @@
     <string name="lbl_gallery">Gallery</string>
     <string name="title_select_dish_type">SELECT DISH TYPE</string>
     <string name="category_select_dish_type">SELECT A CATEGORY</string>
-    <string name="cooking_time_selected">SELECT A COOKING TIME</string>>
+    <string name="cooking_time_selected">SELECT A COOKING TIME</string>
+    <string name="label_no_dishes_added_yet">No dishes Added yet!</string>>
 </resources>

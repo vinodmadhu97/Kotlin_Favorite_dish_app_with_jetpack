@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.Nullable
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -30,11 +31,15 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.favdish.R
+import com.example.favdish.application.FavDishApplication
 import com.example.favdish.databinding.ActivityAddUpdateDishBinding
 import com.example.favdish.databinding.DialogCustomImageSelectionBinding
 import com.example.favdish.databinding.DialogCustomListBinding
+import com.example.favdish.model.entities.FavDish
 import com.example.favdish.utils.Constants
 import com.example.favdish.view.adapters.CustomListItemAdapter
+import com.example.favdish.viewModel.FavDishViewModel
+import com.example.favdish.viewModel.FavDishViewModelFactory
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -60,11 +65,16 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     // A global variable for stored image path.
     private var mImagePath: String = ""
 
-    // TODO Step 1: Define the custom list dialog global and initialize it in the function as it is define previously.
+
     // START
     // A global variable for the custom list dialog.
     private lateinit var mCustomListDialog: Dialog
     // END
+
+    private val mFavDishViewModel : FavDishViewModel by viewModels{
+        FavDishViewModelFactory((application as FavDishApplication).repository)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,14 +204,26 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     else -> {
 
-                        // TODO Step 8: Show the Toast Message for now that you dish entry is valid.
-                        // START
-                        Toast.makeText(
-                            this@AddUpdateDishActivity,
-                            "All the entries are valid.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        // END
+                        val favDishDetalis : FavDish = FavDish(
+                            mImagePath,
+                            Constants.DISH_IMAGE_SOURCE_LOCAL,
+                            title,
+                            type,
+                            category,
+                            ingredients,
+                            cookingTimeInMinutes,
+                            cookingDirection,
+                            false
+                        )
+
+                        //SET DATA TO THE VIEW MODEL
+                        mFavDishViewModel.insert(favDishDetalis)
+
+                        Toast.makeText(this,"success",Toast.LENGTH_LONG).show()
+                        Log.e("insertion","success")
+                        finish()
+
+
                     }
                 }
             }

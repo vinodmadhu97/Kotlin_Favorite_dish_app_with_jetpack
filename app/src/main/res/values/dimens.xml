@@ -9,4 +9,6 @@
     <dimen name="_10sdp">10dp</dimen>
     <dimen name="_30sdp">30dp</dimen>
     <dimen name="_1sdp">1dp</dimen>
+    <dimen name="_5sdp">5dp</dimen>
+    <dimen name="_120sdp">120dp</dimen>
 </resources>

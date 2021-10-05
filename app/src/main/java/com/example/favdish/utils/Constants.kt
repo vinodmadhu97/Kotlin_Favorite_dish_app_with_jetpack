@@ -5,6 +5,9 @@ object Constants {
     const val DISH_CATEGORY = "DishCategory"
     const val DISH_COOKING_TIME = "DishCookingTime"
 
+    const val DISH_IMAGE_SOURCE_LOCAL = "Local"
+    const val DISH_IMAGE_SOURCE_ONLINE = "Online"
+
     fun dishTypes():ArrayList<String>{
 
         val list = ArrayList<String>()
