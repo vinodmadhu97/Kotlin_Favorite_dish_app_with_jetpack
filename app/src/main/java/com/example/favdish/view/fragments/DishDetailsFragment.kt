@@ -7,7 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -16,13 +19,21 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.favdish.R
+import com.example.favdish.application.FavDishApplication
 import com.example.favdish.databinding.FragmentDishDetailsBinding
+import com.example.favdish.model.databse.FavDishRepository
+import com.example.favdish.viewModel.FavDishViewModel
+import com.example.favdish.viewModel.FavDishViewModelFactory
 import java.io.IOException
 
 
 class DishDetailsFragment : Fragment() {
 
     private var mBinding:FragmentDishDetailsBinding? = null
+
+    private val mFavDishViewModel : FavDishViewModel by viewModels {
+        FavDishViewModelFactory(((requireActivity().application) as FavDishApplication).repository)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +104,35 @@ class DishDetailsFragment : Fragment() {
             mBinding!!.tvCookingDirection.text = it.dishDetails.directionToCook
             mBinding!!.tvCookingTime.text = resources.getString(R.string.lbl_estimate_cooking_time,it.dishDetails.cookingTime)
 
+            if (args.dishDetails.favoriteDish){
+
+                mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_selected))
+                Toast.makeText(requireContext(),"Added to the favorite",Toast.LENGTH_LONG).show()
+
+            }else{
+
+                mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_unselected))
+                Toast.makeText(requireContext(),"Remove from  the favorite",Toast.LENGTH_LONG).show()
+
+            }
+
+        }
+
+        mBinding!!.ivFavoriteDish.setOnClickListener {
+            args.dishDetails.favoriteDish = !args.dishDetails.favoriteDish
+            mFavDishViewModel.update(args.dishDetails)
+
+            if (args.dishDetails.favoriteDish){
+
+                mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_selected))
+                Toast.makeText(requireContext(),"Added to the favorite",Toast.LENGTH_LONG).show()
+
+            }else{
+
+                mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_unselected))
+                Toast.makeText(requireContext(),"Remove from  the favorite",Toast.LENGTH_LONG).show()
+
+            }
 
         }
     }

@@ -13,7 +13,13 @@ class FavDishViewModel(private val repository: FavDishRepository): ViewModel() {
     }
 
     val allDishesList : LiveData<List<FavDish>> = repository.allDishesList.asLiveData()
+
+    //UPDATE FAV DISH DATA
+    fun update(dish: FavDish) = viewModelScope.launch {
+        repository.updateFavDishData(dish)
+    }
 }
+
 
 class FavDishViewModelFactory(private val favDishRepository: FavDishRepository): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
