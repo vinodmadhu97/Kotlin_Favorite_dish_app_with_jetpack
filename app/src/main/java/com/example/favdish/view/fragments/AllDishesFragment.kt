@@ -1,5 +1,7 @@
 package com.example.favdish.view.fragments
 
+
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 
@@ -14,9 +16,9 @@ import com.example.favdish.R
 import com.example.favdish.application.FavDishApplication
 import com.example.favdish.databinding.FragmentAllDishesBinding
 import com.example.favdish.model.entities.FavDish
-
-
 import com.example.favdish.view.activities.AddUpdateDishActivity
+
+
 import com.example.favdish.view.activities.MainActivity
 import com.example.favdish.view.adapters.FavDishAdapter
 import com.example.favdish.viewModel.FavDishViewModel
@@ -91,7 +93,7 @@ class AllDishesFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.action_add_dishes -> {
-                startActivity(Intent(requireActivity(),AddUpdateDishActivity::class.java))
+                startActivity(Intent(requireActivity(), AddUpdateDishActivity::class.java))
                 return true
             }
         }
@@ -104,6 +106,26 @@ class AllDishesFragment : Fragment() {
         if (requireActivity() is MainActivity){
             (activity as MainActivity?)?.hideBottomNavigationView()
         }
+    }
+
+    fun deleteDish(favDish: FavDish){
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle(resources.getString(R.string.msg_delete_dish_dialog_title))
+        builder.setMessage(resources.getString(R.string.msg_delete_dish_dialog_message,favDish.title))
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+        builder.setPositiveButton("Yes"){ dialogInterface,_ ->
+            mFavDishViewModel.delete(favDish)
+            dialogInterface.dismiss()
+        }
+
+        builder.setNegativeButton("No"){
+            dialogInterface,_ -> dialogInterface.dismiss()
+        }
+
+        val alertDialog : AlertDialog = builder.create()
+        alertDialog.setCancelable(false)
+        alertDialog.show()
+
     }
 
     override fun onResume() {

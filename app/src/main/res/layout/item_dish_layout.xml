@@ -7,18 +7,39 @@
     app:cardElevation="@dimen/_5sdp"
     app:cardUseCompatPadding="true">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <ImageView
-            android:id="@+id/iv_dish_image"
+
+        <!-- TODO Step 2: Add the more icon for Edit and Delete options.-->
+        <!--START-->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_120sdp"
-            android:layout_margin="@dimen/_1sdp"
-            android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher"
-            />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_dish_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_margin="@dimen/_1sdp"
+                android:contentDescription="@string/image_contentDescription"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher" />
+
+            <ImageButton
+                android:id="@+id/ib_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/image_contentDescription"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_more" />
+        </FrameLayout>
+        <!--END-->
 
         <TextView
             android:id="@+id/tv_dish_title"
@@ -27,10 +48,9 @@
             android:layout_margin="@dimen/_10sdp"
             android:gravity="center_vertical"
             android:textColor="@color/grey_900"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16sdp"
             android:textStyle="bold"
-            android:text="Dish title"/>
-
+            android:text= "Dish Title" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

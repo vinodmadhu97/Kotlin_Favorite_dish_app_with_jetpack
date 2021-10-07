@@ -61,7 +61,7 @@ import java.util.*
 class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mBinding: ActivityAddUpdateDishBinding
-
+    private var mFavDishDetails : FavDish? = null
     // A global variable for stored image path.
     private var mImagePath: String = ""
 
@@ -79,6 +79,10 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        if (intent.hasExtra(Constants.EXTRA_DISH_DETAILS)){
+            mFavDishDetails = intent.getParcelableExtra(Constants.EXTRA_DISH_DETAILS)
+        }
+
         mBinding = ActivityAddUpdateDishBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
@@ -94,6 +98,25 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         // START
         mBinding.btnAddDish.setOnClickListener(this@AddUpdateDishActivity)
         // END
+
+        mFavDishDetails?.let {
+            if (it.id != 0){
+                 mImagePath = it.image
+                Glide.with(this@AddUpdateDishActivity)
+                    .load(mImagePath)
+                    .centerCrop()
+                    .into(mBinding.ivDishImage)
+
+                mBinding.etTitle.setText(it.title)
+                mBinding.etType.setText(it.type)
+                mBinding.etCategory.setText(it.category)
+                mBinding.etIngredients.setText(it.ingredients)
+                mBinding.etCookingTime.setText(it.cookingTime)
+                mBinding.etDirectionToCook.setText(it.directionToCook)
+
+                mBinding.btnAddDish.text = "Update"
+            }
+        }
     }
 
     override fun onClick(v: View) {
@@ -204,23 +227,46 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
                     }
                     else -> {
 
+                        var dishId = 0
+                        var imageSource = Constants.DISH_IMAGE_SOURCE_LOCAL
+                        var favoriteDish = false
+
+                        //check weather if it is new or exist
+                        mFavDishDetails?.let {
+                            if (it.id != 0){
+                                dishId = it.id
+                                imageSource = it.imageSource
+                                favoriteDish = it.favoriteDish
+                            }
+                        }
+
                         val favDishDetalis : FavDish = FavDish(
                             mImagePath,
-                            Constants.DISH_IMAGE_SOURCE_LOCAL,
+                            imageSource,
                             title,
                             type,
                             category,
                             ingredients,
                             cookingTimeInMinutes,
                             cookingDirection,
-                            false
+                            favoriteDish,
+                            dishId
                         )
 
-                        //SET DATA TO THE VIEW MODEL
-                        mFavDishViewModel.insert(favDishDetalis)
 
-                        Toast.makeText(this,"success",Toast.LENGTH_LONG).show()
-                        Log.e("insertion","success")
+                        if (dishId == 0){
+
+                            mFavDishViewModel.insert(favDishDetalis)
+                            Toast.makeText(this,"success",Toast.LENGTH_LONG).show()
+                            Log.e("insertion","success")
+
+                        }else{
+                            mFavDishViewModel.update(favDishDetalis)
+                            Toast.makeText(this,"Updating success",Toast.LENGTH_SHORT).show()
+                        }
+
+                        //SET DATA TO THE VIEW MODEL
+
                         finish()
 
 
@@ -333,6 +379,16 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+
+        if (mFavDishDetails != null && mFavDishDetails!!.id != 0){
+            supportActionBar?.let {
+                it.title = "Edit Dish"
+            }
+        }else{
+            supportActionBar?.let {
+                it.title = "Add Dish"
+            }
+        }
 
         mBinding.toolbarAddDishActivity.setNavigationOnClickListener { onBackPressed() }
     }

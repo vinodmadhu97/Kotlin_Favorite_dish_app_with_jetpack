@@ -107,12 +107,12 @@ class DishDetailsFragment : Fragment() {
             if (args.dishDetails.favoriteDish){
 
                 mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_selected))
-                Toast.makeText(requireContext(),"Added to the favorite",Toast.LENGTH_LONG).show()
+                //Toast.makeText(requireContext(),"Added to the favorite",Toast.LENGTH_LONG).show()
 
             }else{
 
                 mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_unselected))
-                Toast.makeText(requireContext(),"Remove from  the favorite",Toast.LENGTH_LONG).show()
+                //Toast.makeText(requireContext(),"Remove from  the favorite",Toast.LENGTH_LONG).show()
 
             }
 
@@ -125,12 +125,12 @@ class DishDetailsFragment : Fragment() {
             if (args.dishDetails.favoriteDish){
 
                 mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_selected))
-                Toast.makeText(requireContext(),"Added to the favorite",Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Added to the favorite",Toast.LENGTH_SHORT).show()
 
             }else{
 
                 mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.ic_favorite_unselected))
-                Toast.makeText(requireContext(),"Remove from  the favorite",Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Remove from  the favorite",Toast.LENGTH_SHORT).show()
 
             }
 
