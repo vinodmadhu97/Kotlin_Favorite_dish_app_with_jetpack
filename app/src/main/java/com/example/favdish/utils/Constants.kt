@@ -4,6 +4,7 @@ object Constants {
     const val DISH_TYPE = "DishType"
     const val DISH_CATEGORY = "DishCategory"
     const val DISH_COOKING_TIME = "DishCookingTime"
+    const val ALL_DISHES = "All Dishes"
 
     const val DISH_IMAGE_SOURCE_LOCAL = "Local"
     const val DISH_IMAGE_SOURCE_ONLINE = "Online"

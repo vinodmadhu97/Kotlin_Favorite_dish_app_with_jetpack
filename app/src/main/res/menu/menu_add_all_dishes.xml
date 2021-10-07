@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_filter_dishes"
+        android:icon="@drawable/ic_filter_list"
+        android:title="Filter"
+        android:orderInCategory="1"
+        app:showAsAction="always"/>
+
     <item android:id="@+id/action_add_dishes"
         android:icon="@drawable/ic_add_24"
         android:title="Add dish"
+        android:orderInCategory="2"
         app:showAsAction="always"/>
 </menu>
