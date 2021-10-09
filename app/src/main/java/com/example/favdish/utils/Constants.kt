@@ -23,6 +23,10 @@ object Constants {
     const val TAGS_VALUE = "vegetarian,dessert"
     const val NUMBER_VALUE = 1
 
+    const val NOTIFICATION_ID = "FavDish_notification_id"
+    const val NOTIFICATION_NAME = "FavDish"
+    const val NOTIFICATION_CHANNEL = "FavDish_channel_1"
+
 
     fun dishTypes():ArrayList<String>{
 
