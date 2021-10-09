@@ -1,5 +1,6 @@
 package com.example.favdish.view.fragments
 
+import android.app.Dialog
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -30,6 +32,9 @@ class RandomDishesFragment : Fragment() {
 
     private var mBinding : FragmentRandomDishesBinding? = null
     private lateinit var mRandomDishModel: RandomDishViewModel
+    private var mProgressDialog : Dialog? = null
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,6 +52,11 @@ class RandomDishesFragment : Fragment() {
         mRandomDishModel = ViewModelProvider(this).get(RandomDishViewModel::class.java)
         mRandomDishModel.getRandomDishFromApi()
         randomDishViewModelObserver()
+
+        mBinding!!.srlRandomDish.setOnRefreshListener {
+            mRandomDishModel.getRandomDishFromApi()
+        }
+
     }
 
 
@@ -56,6 +66,11 @@ class RandomDishesFragment : Fragment() {
                 randomDishResponse -> randomDishResponse?.let {
                    //Log.i("random_dish","${randomDishResponse.recipes[0]}")
                 setRandomDishResponseInUI(randomDishResponse.recipes[0])
+
+                    if (mBinding!!.srlRandomDish.isRefreshing){
+                        mBinding!!.srlRandomDish.isRefreshing = false
+                    }
+
                 }
             }
             )
@@ -64,13 +79,23 @@ class RandomDishesFragment : Fragment() {
             {
                 dataError -> dataError?.let {
                    Log.e("random_dish_error","$dataError")
+                if (mBinding!!.srlRandomDish.isRefreshing){
+                    mBinding!!.srlRandomDish.isRefreshing = false
+                }
                 }
             }
             )
 
         mRandomDishModel.loadRandomDish.observe(viewLifecycleOwner,{
             loadRandomDish -> loadRandomDish?.let {
-                Log.e("random_dish_loading","$loadRandomDish")
+                //Log.e("random_dish_loading","$loadRandomDish")
+                //IF DATA LOADING STARTED loadingRandomDish is TRUE AFTER THE LOADING THAT WILL BE FALSE
+                // SCROLL DOWN REFRESHING HAS OUN PROGRESS DIALOG
+                if (loadRandomDish && !mBinding!!.srlRandomDish.isRefreshing){
+                    showProgressDialog()
+                }else{
+                    dismissDialog()
+                }
             }
         })
     }
@@ -114,29 +139,64 @@ class RandomDishesFragment : Fragment() {
             mBinding!!.tvCookingDirection.text = Html.fromHtml(recipe.instructions,)
         }
 
-        mBinding!!.tvCookingTime.text = resources.getString(R.string.lbl_estimate_cooking_time,recipe.readyInMinutes.toString())
+        mBinding!!.tvCookingTime.text = resources.getString(
+            R.string.lbl_estimate_cooking_time,
+            recipe.readyInMinutes.toString())
 
-        mBinding!!.ivFavoriteDish.setOnClickListener {
-            val randomDishDetails = FavDish(
-                recipe.image,
-                Constants.DISH_IMAGE_SOURCE_ONLINE,
-                recipe.title,
-                dishType,
-                "Other",
-                ingredients,
-                recipe.readyInMinutes.toString(),
-                recipe.instructions,
-                true
-            )
+        mBinding!!.ivFavoriteDish.setImageDrawable(
+            ContextCompat.getDrawable(requireActivity(),
+                R.drawable.ic_favorite_unselected))
 
-            val favDishViewModel : FavDishViewModel by viewModels {
-                FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
+        var addedToFavorite = false
+
+
+
+            mBinding!!.ivFavoriteDish.setOnClickListener {
+
+                if (addedToFavorite){
+                    Toast.makeText(requireActivity(),resources.getString(R.string.msg_already_added_to_the_favorite),Toast.LENGTH_SHORT).show()
+                }else{
+                    val randomDishDetails = FavDish(
+                        recipe.image,
+                        Constants.DISH_IMAGE_SOURCE_ONLINE,
+                        recipe.title,
+                        dishType,
+                        "Other",
+                        ingredients,
+                        recipe.readyInMinutes.toString(),
+                        recipe.instructions,
+                        true
+                    )
+
+
+
+                    val favDishViewModel : FavDishViewModel by viewModels {
+                        FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
+                    }
+                    favDishViewModel.insert(randomDishDetails)
+
+                    mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireActivity(),R.drawable.ic_favorite_selected))
+                    Toast.makeText(requireActivity(),"Dish added to the Favorite",Toast.LENGTH_SHORT).show()
+
+                    addedToFavorite = true
+                }
+
             }
-            favDishViewModel.insert(randomDishDetails)
 
-            mBinding!!.ivFavoriteDish.setImageDrawable(ContextCompat.getDrawable(requireActivity(),R.drawable.ic_favorite_selected))
+    }
+
+    private fun showProgressDialog(){
+        mProgressDialog = Dialog(requireActivity())
+        mProgressDialog?.let {
+            it.setContentView(R.layout.custom_progress_dialog)
+            it.show()
         }
+    }
 
+    private fun dismissDialog(){
+        mProgressDialog?.let {
+            it.dismiss()
+        }
     }
 
     override fun onDestroyView() {
